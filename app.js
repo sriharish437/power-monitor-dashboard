@@ -7,59 +7,59 @@
    --------------------------------------------------------- */
 
 const CONFIG = {
-  CHANNEL_ID:   "YOUR_CHANNEL_ID",      // e.g. "2312456"
-  READ_API_KEY: "YOUR_READ_API_KEY",    // e.g. "ABCDEFGH12345678"
-  RESULTS:      10,                     // number of readings for chart
-  REFRESH_MS:   5000,                   // auto-refresh interval (ms)
-  MAX_POWER:    3000,                   // max expected W per phase (for bar %)
+  CHANNEL_ID: "3350037",      // e.g. "2312456"
+  READ_API_KEY: "XLDS982NVGOC9S4M",    // e.g. "ABCDEFGH12345678"
+  RESULTS: 10,                     // number of readings for chart
+  REFRESH_MS: 5000,                   // auto-refresh interval (ms)
+  MAX_POWER: 3000,                   // max expected W per phase (for bar %)
 };
 
 /* =========================================================
    DOM References
    ========================================================= */
 const dom = {
-  statusDot:         document.getElementById("statusDot"),
-  statusLabel:       document.getElementById("statusLabel"),
-  lastUpdateTime:    document.getElementById("lastUpdateTime"),
-  refreshBtn:        document.getElementById("refreshBtn"),
+  statusDot: document.getElementById("statusDot"),
+  statusLabel: document.getElementById("statusLabel"),
+  lastUpdateTime: document.getElementById("lastUpdateTime"),
+  refreshBtn: document.getElementById("refreshBtn"),
 
-  p1Value:           document.getElementById("p1-value"),
-  p2Value:           document.getElementById("p2-value"),
-  p3Value:           document.getElementById("p3-value"),
+  p1Value: document.getElementById("p1-value"),
+  p2Value: document.getElementById("p2-value"),
+  p3Value: document.getElementById("p3-value"),
 
-  barP1:             document.getElementById("bar-p1"),
-  barP2:             document.getElementById("bar-p2"),
-  barP3:             document.getElementById("bar-p3"),
+  barP1: document.getElementById("bar-p1"),
+  barP2: document.getElementById("bar-p2"),
+  barP3: document.getElementById("bar-p3"),
 
-  indicatorP1:       document.getElementById("indicator-p1"),
-  indicatorP2:       document.getElementById("indicator-p2"),
-  indicatorP3:       document.getElementById("indicator-p3"),
+  indicatorP1: document.getElementById("indicator-p1"),
+  indicatorP2: document.getElementById("indicator-p2"),
+  indicatorP3: document.getElementById("indicator-p3"),
 
-  statusP1:          document.getElementById("status-p1"),
-  statusP2:          document.getElementById("status-p2"),
-  statusP3:          document.getElementById("status-p3"),
+  statusP1: document.getElementById("status-p1"),
+  statusP2: document.getElementById("status-p2"),
+  statusP3: document.getElementById("status-p3"),
 
-  badgeP1:           document.getElementById("badge-p1"),
-  badgeP2:           document.getElementById("badge-p2"),
-  badgeP3:           document.getElementById("badge-p3"),
+  badgeP1: document.getElementById("badge-p1"),
+  badgeP2: document.getElementById("badge-p2"),
+  badgeP3: document.getElementById("badge-p3"),
 
-  cardP1:            document.getElementById("card-phase1"),
-  cardP2:            document.getElementById("card-phase2"),
-  cardP3:            document.getElementById("card-phase3"),
+  cardP1: document.getElementById("card-phase1"),
+  cardP2: document.getElementById("card-phase2"),
+  cardP3: document.getElementById("card-phase3"),
 
-  totalPower:        document.getElementById("totalPower"),
-  avgPower:          document.getElementById("avgPower"),
-  peakPower:         document.getElementById("peakPower"),
-  nextRefresh:       document.getElementById("nextRefresh"),
+  totalPower: document.getElementById("totalPower"),
+  avgPower: document.getElementById("avgPower"),
+  peakPower: document.getElementById("peakPower"),
+  nextRefresh: document.getElementById("nextRefresh"),
 
-  activePhaseValue:  document.getElementById("activePhaseValue"),
-  activePhaseBadge:  document.getElementById("activePhaseBadge"),
+  activePhaseValue: document.getElementById("activePhaseValue"),
+  activePhaseBadge: document.getElementById("activePhaseBadge"),
 
-  errorBanner:       document.getElementById("errorBanner"),
-  errorMessage:      document.getElementById("errorMessage"),
+  errorBanner: document.getElementById("errorBanner"),
+  errorMessage: document.getElementById("errorMessage"),
 
-  footerChannel:     document.getElementById("footerChannel"),
-  powerChart:        document.getElementById("powerChart"),
+  footerChannel: document.getElementById("footerChannel"),
+  powerChart: document.getElementById("powerChart"),
 };
 
 /* =========================================================
@@ -72,18 +72,20 @@ const state = {
     p2: [],
     p3: [],
   },
-  countdown:     CONFIG.REFRESH_MS / 1000,
+  countdown: CONFIG.REFRESH_MS / 1000,
   countdownTimer: null,
-  refreshTimer:   null,
-  chart:          null,
-  lastValues:     { p1: null, p2: null, p3: null },
+  refreshTimer: null,
+  chart: null,
+  lastValues: { p1: null, p2: null, p3: null },
 };
 
 /* =========================================================
    ThingSpeak API
    ========================================================= */
 function buildApiUrl() {
-  return `https://api.thingspeak.com/channels/${CONFIG.CHANNEL_ID}/feeds.json?api_key=${CONFIG.READ_API_KEY}&results=${CONFIG.RESULTS}`;
+  return "https://api.allorigins.win/raw?url=" + encodeURIComponent(
+    "https://api.thingspeak.com/channels/3350037/feeds.json?api_key=XLDS982NVGOC9S4M&results=1"
+  );
 }
 
 async function fetchThingSpeak() {
@@ -125,9 +127,9 @@ function parseFeeds(data) {
    ========================================================= */
 function setConnectionStatus(type) {
   dom.statusDot.className = "status-dot " + type;
-  if (type === "online")       dom.statusLabel.textContent = "Live";
-  else if (type === "error")   dom.statusLabel.textContent = "Error";
-  else                          dom.statusLabel.textContent = "Connecting...";
+  if (type === "online") dom.statusLabel.textContent = "Live";
+  else if (type === "error") dom.statusLabel.textContent = "Error";
+  else dom.statusLabel.textContent = "Connecting...";
 }
 
 function showError(msg) {
@@ -147,22 +149,22 @@ function flashValue(el) {
 }
 
 function getStatusColor(value) {
-  if (isNaN(value) || value <= 0)  return "red";
-  if (value < 500)                 return "yellow";
+  if (isNaN(value) || value <= 0) return "red";
+  if (value < 500) return "yellow";
   return "green";
 }
 
 function getStatusText(value) {
-  if (isNaN(value) || value <= 0)  return "No signal";
-  if (value < 500)                 return "Low load";
-  if (value < 1500)                return "Moderate";
+  if (isNaN(value) || value <= 0) return "No signal";
+  if (value < 500) return "Low load";
+  if (value < 1500) return "Moderate";
   return "High load";
 }
 
 function getBadgeText(value) {
   if (isNaN(value) || value <= 0) return "OFF";
-  if (value < 500)                return "LOW";
-  if (value < 1500)               return "MED";
+  if (value < 500) return "LOW";
+  if (value < 1500) return "MED";
   return "HIGH";
 }
 
@@ -184,7 +186,7 @@ function updateCard(valueEl, barEl, indicatorEl, statusEl, badgeEl, cardEl, valu
   barEl.style.width = isNaN(value) ? "0%" : getBarWidth(value);
   indicatorEl.className = "card-status-indicator " + color;
   statusEl.textContent = getStatusText(value);
-  badgeEl.textContent  = getBadgeText(value);
+  badgeEl.textContent = getBadgeText(value);
 }
 
 function updateActivePhase(p1, p2, p3) {
@@ -200,7 +202,7 @@ function updateActivePhase(p1, p2, p3) {
   const valid = phases.filter(p => !isNaN(p.val) && p.val > 0);
   if (valid.length === 0) {
     dom.activePhaseValue.textContent = "--";
-    dom.activePhaseBadge.textContent  = "No Data";
+    dom.activePhaseBadge.textContent = "No Data";
     return;
   }
 
@@ -213,12 +215,12 @@ function updateActivePhase(p1, p2, p3) {
 function updateStats(p1, p2, p3) {
   const vals = [p1, p2, p3].filter(v => !isNaN(v) && v > 0);
   const total = vals.reduce((a, b) => a + b, 0);
-  const avg   = vals.length ? total / vals.length : 0;
-  const peak  = vals.length ? Math.max(...vals) : 0;
+  const avg = vals.length ? total / vals.length : 0;
+  const peak = vals.length ? Math.max(...vals) : 0;
 
   dom.totalPower.textContent = total.toFixed(1);
-  dom.avgPower.textContent   = avg.toFixed(1);
-  dom.peakPower.textContent  = peak.toFixed(1);
+  dom.avgPower.textContent = avg.toFixed(1);
+  dom.peakPower.textContent = peak.toFixed(1);
 }
 
 function updateLastUpdateTime() {
@@ -340,10 +342,10 @@ function initChart() {
 
 function updateChart(labels, p1Arr, p2Arr, p3Arr) {
   if (!state.chart) return;
-  state.chart.data.labels            = labels;
-  state.chart.data.datasets[0].data  = p1Arr;
-  state.chart.data.datasets[1].data  = p2Arr;
-  state.chart.data.datasets[2].data  = p3Arr;
+  state.chart.data.labels = labels;
+  state.chart.data.datasets[0].data = p1Arr;
+  state.chart.data.datasets[1].data = p2Arr;
+  state.chart.data.datasets[2].data = p3Arr;
   state.chart.update("active");
 }
 
@@ -413,7 +415,7 @@ function startAutoRefresh() {
    ========================================================= */
 function formatTime(date) {
   return date.toLocaleTimeString("en-IN", {
-    hour:   "2-digit",
+    hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
     hour12: false,
